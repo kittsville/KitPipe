@@ -1,0 +1,3 @@
+# List every directory you want to be scanned here
+# e.g. C:/my-project/scripts/
+# Commented lines are ignored

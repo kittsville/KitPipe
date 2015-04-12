@@ -8,17 +8,12 @@ Python:         2.7.9
 License:        GPL2
 '''
 
+from __future__ import print_function   # To make it easier for people who get slimit working on Python 3
 from cssmin import cssmin               # For CSS
 from slimit import minify               # For JS
 import os                               # For file/directory interaction
 import hashlib                          # Checking if a file has changed
 import sys                              # For quitting
-from __future__ import print_function   # To make it easier for people who get slimit working on Python 3
-
-watchedDirectories = ['C:/xampp/apps/wordpress/htdocs/wp-content/plugins/WP-Librarian/scripts','C:/xampp/apps/wordpress/htdocs/wp-content/plugins/WP-Librarian/styles']
-
-def validDirectory(path):
-    return os.path.exists(os.path.dirname(path))
 
 # Holds shared minifying logic for JS/CSS assets
 class Asset:
@@ -75,18 +70,64 @@ class CSSAsset(Asset):
     def minify(self):
         return cssmin(open(self.file, 'r').read())
 
+# ==========
+# Step 1: Load directories
+# ==========
+print('==========\nLoading Directories\n==========')
+
+watchedDirectories = []
+
+directoryConfigPath = os.path.realpath('directories.txt')
+
+if os.path.exists(directoryConfigPath):
+    with open(directoryConfigPath, 'r') as directoryConfigFile:
+        for directory in directoryConfigFile:
+            directory = directory.strip()
+            
+            # Ignores commented lines
+            if directory.startswith("#"):
+                continue
+            
+            # Standardises '/' '\' differences
+            directory = directory.replace('\\', '/')
+            
+            # Fixes directories missing a trailing slash
+            if not directory.endswith('/'):
+                directory += '/'
+            
+            directory = os.path.dirname(directory)
+            
+            # Adds directory if it exists and has not already been added, informs user if otherwise
+            if os.path.isdir(directory):
+                if directory not in watchedDirectories:
+                    watchedDirectories.append(directory)
+                    print('Loaded directory ' + directory)
+                else:
+                    print('I\'ve already loaded this directory ' + directory)
+                    continue
+            elif os.path.exists(directory):
+                print('Not a directory ' + directory)
+            else:
+                print('Failed to load directory (doesn\'t exist) ' + directory)
+else:
+    print('I need a directories.txt file that lists directories to watch')
+    sys.exit()
+
+if len(watchedDirectories) == 0:
+    print('No valid directories in directories.txt to watch. Quitting')
+    sys.exit()
+
+# ==========
+# Step 2: Load assets
+# ==========
+print('==========\nLoading Assets\n==========')
+
 # All assets found by the script
 assets  = []
 jsCount = 0
 cssCount= 0
 
-# Indexing stage
-print('Building Asset Index...')
 for directory in watchedDirectories:
-    # Validates directory exists
-    if not validDirectory(directory):
-        print('Skipped invalid directory: "' + directory + '"')
-    
     # Iterates over files in directory
     for asset in os.listdir(directory):
         if asset.endswith(".js") and not asset.endswith(".min.js"):
@@ -96,16 +137,25 @@ for directory in watchedDirectories:
             assets.append(CSSAsset(asset, directory))
             cssCount += 1
 
-print("Assets Indexed:\n%s JS\n%s CSS" % (jsCount, cssCount))
+print("\n%s JS and %s CSS Loaded" % (jsCount, cssCount))
 
-# Minifies everything as existing minified assets might not match (could have been updated before script was run)
-print('Minifying everything...')
+# ==========
+# Step 3: Minify all assets
+# ==========
+print('==========\nMinifying Assets\n==========')
+
 for asset in assets:
     asset.saveMinified(asset.minify())
 print('All assets minifed')
 
+# ==========
+# Step 4: Re-minifies any assets that have changed (each time I'm woken)
+# ==========
+
 while True:
-    input('Cave Johnson, we\'re done here. Press Enter to wake me and check for changes')
+    raw_input('Cave Johnson, we\'re done here. Press Enter to wake me and check for changes')
+    
+    print('==========\nRe-minifying Changed Assets\n==========')
     
     minifiedCount = 0
     
@@ -116,8 +166,8 @@ while True:
             minifiedCount += 1
     
     if minifiedCount == 0:
-        print('No assets minified')
+        print('No assets changed since last check')
     elif minifiedCount == 1:
-        print('1 asset minified')
+        print('1 asset has changed and been re-minfied')
     else:
-        print("%s assets minified" % minifiedCount)
+        print("%s assets have changed and been re-minified" % minifiedCount)
