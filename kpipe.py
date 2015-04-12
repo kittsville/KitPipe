@@ -4,15 +4,16 @@ Name:           KitPipe
 Description:    A crappy little assets minifier I created to make minifying WP-Librarian assets easier
 Author:         Kittsville
 Contact:        kittsville [at] gmail.com
-Python:         3.4.3
+Python:         2.7.9
 License:        GPL2
 '''
 
-from cssmin import cssmin   # For CSS
-from slimit import minify   # For JS
-import os                   # For file/directory interaction
-import hashlib              # Checking if a file has changed
-import sys
+from cssmin import cssmin               # For CSS
+from slimit import minify               # For JS
+import os                               # For file/directory interaction
+import hashlib                          # Checking if a file has changed
+import sys                              # For quitting
+from __future__ import print_function   # To make it easier for people who get slimit working on Python 3
 
 watchedDirectories = ['C:/xampp/apps/wordpress/htdocs/wp-content/plugins/WP-Librarian/scripts','C:/xampp/apps/wordpress/htdocs/wp-content/plugins/WP-Librarian/styles']
 
