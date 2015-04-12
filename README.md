@@ -11,4 +11,6 @@ A crappy little asset pipeline in Python for CSS/JS. Created for [WP-Librarian](
 2. Run script. Every JS and CSS file found in the given directories will be minified<sup>1</sup>
 3. Press enter every time you want KitPipe to re-minify any files that have changed
 
-1 - Besides those named `thing.min.css` or `thing.min.js`
+---
+
+1 - Besides assets whose names end in `.min.css` or `.min.js`
