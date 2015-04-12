@@ -139,6 +139,9 @@ for directory in watchedDirectories:
 
 print("\n%s JS and %s CSS Loaded" % (jsCount, cssCount))
 
+# Only variable needed from on is the assets array
+del jsCount, cssCount, watchedDirectories, directoryConfigPath
+
 # ==========
 # Step 3: Minify all assets
 # ==========
