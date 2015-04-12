@@ -25,7 +25,7 @@ class Asset:
     # Checks if the asset has been changed since the script last looked at it
     # Updates checksum if file has been modified
     def changed(self):
-        newChecksum = genChecksum()
+        newChecksum = self.genChecksum()
         
         if newChecksum == self.checksum:
             return False
