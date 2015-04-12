@@ -1,0 +1,3 @@
+# List file names here that you want to skip (NOT full paths)
+# e.g. jQuery.js
+# Commented lines are ignored

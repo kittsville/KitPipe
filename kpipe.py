@@ -118,18 +118,57 @@ if len(watchedDirectories) == 0:
     sys.exit()
 
 # ==========
-# Step 2: Load assets
+# Step 2: Load files to skip
+# ==========
+print('==========\nLoading Files to Skip\n==========')
+
+skipFiles = []
+
+skipFilesPath = os.path.realpath('skip.txt')
+
+if os.path.exists(skipFilesPath):
+    with open(skipFilesPath, 'r') as skipFilesFile:
+        for skipFile in skipFilesFile:
+            skipFile = skipFile.strip()
+            
+            # Ignores commented lines
+            if skipFile.startswith("#"):
+                continue
+            
+            # Standardises '/' '\' differences
+            skipFile = skipFile.replace('\\', '/')
+            
+            if os.path.isfile(skipFile):
+                skipFiles.append(skipFile)
+                print('Will skip ' + skipFile)
+            else:
+                print('Invalid file ' + skipFile)
+    
+    if len(skipFiles) == 0:
+        print('No files to skip found')
+else:
+    print('No skipfile.txt found. Continuing as it\'s non-essential')
+
+# ==========
+# Step 3: Load assets
 # ==========
 print('==========\nLoading Assets\n==========')
 
 # All assets found by the script
-assets  = []
-jsCount = 0
-cssCount= 0
+assets      = []
+jsCount     = 0
+cssCount    = 0
+skipcount   = 0
 
 for directory in watchedDirectories:
     # Iterates over files in directory
     for asset in os.listdir(directory):
+        # Checks if user wants file skipped
+        if directory + '/' + asset in skipFiles:
+            print('Skipping ' + asset)
+            skipcount += 1
+            continue
+        
         if asset.endswith(".js") and not asset.endswith(".min.js"):
             assets.append(JSAsset(asset, directory))
             jsCount += 1
@@ -139,11 +178,14 @@ for directory in watchedDirectories:
 
 print("\n%s JS and %s CSS Loaded" % (jsCount, cssCount))
 
+if skipcount > 0:
+    print("%s Skipped" % skipcount)
+
 # Only variable needed from on is the assets array
-del jsCount, cssCount, watchedDirectories, directoryConfigPath
+del jsCount, cssCount, skipcount, watchedDirectories, directoryConfigPath, skipFilesPath
 
 # ==========
-# Step 3: Minify all assets
+# Step 4: Minify all assets
 # ==========
 print('==========\nMinifying Assets\n==========')
 
@@ -152,7 +194,7 @@ for asset in assets:
 print('All assets minifed')
 
 # ==========
-# Step 4: Re-minifies any assets that have changed (each time I'm woken)
+# Step 5: Re-minifies any assets that have changed (each time I'm woken)
 # ==========
 
 while True:

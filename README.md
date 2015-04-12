@@ -8,8 +8,9 @@ A crappy little asset pipeline in Python for CSS/JS. Created for [WP-Librarian](
 
 ###Usage
 1. Add every directory you want minified to `directories.txt`
-2. Run script. Every JS and CSS file found in the given directories will be minified<sup>1</sup>
-3. Press enter every time you want KitPipe to re-minify any files that have changed
+2. Add any files you don't want minified to `skip.txt`
+3. Run script. Every JS and CSS file found in the given directories will be minified<sup>1</sup>
+4. Press enter every time you want KitPipe to re-minify any files that have changed
 
 ---
 
