@@ -164,10 +164,7 @@ while True:
     for asset in assets:
         if asset.minifyIfChanged():
             minifiedCount += 1
+            print("%s has changed and been re-minified" % asset.name)
     
     if minifiedCount == 0:
         print('No assets changed since last check')
-    elif minifiedCount == 1:
-        print('1 asset has changed and been re-minfied')
-    else:
-        print("%s assets have changed and been re-minified" % minifiedCount)
