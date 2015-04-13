@@ -8,7 +8,7 @@ Python:         2.7.9
 License:        GPL2
 '''
 
-from __future__ import print_function   # To make it easier for people who get slimit working on Python 3
+from __future__ import print_function   # To make it easier for people who get Slimit working on Python 3
 from cssmin import cssmin               # For CSS
 from slimit import minify               # For JS
 import os                               # For file/directory interaction
