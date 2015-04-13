@@ -63,7 +63,7 @@ class Asset:
 class JSAsset(Asset):
     # Generates and returns minified version of JS asset
     def minify(self):
-        return minify(open(self.file, 'r').read(), mangle=True, mangle_toplevel=True)
+        return minify(open(self.file, 'r').read(), mangle=True)
 
 class CSSAsset(Asset):
     # Generates and returns minified version of CSS asset
