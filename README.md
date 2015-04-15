@@ -6,6 +6,9 @@ A crappy little asset pipeline in Python for CSS/JS. Created for [WP-Librarian](
 - Slimit
 - CSSMin
 
+###Known Issues
+Difference checking fails when switching (Git) branch, so don't switch branch between Cave Johnson passes.
+
 ###Usage
 1. Add every directory you want minified to `directories.txt`
 2. Add any files you don't want minified to `skip.txt`
