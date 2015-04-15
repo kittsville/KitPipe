@@ -6,6 +6,9 @@ A crappy little asset pipeline in Python for CSS/JS. Created for [WP-Librarian](
 - Slimit
 - CSSMin
 
+###Known Issues
+Script breaks if you delete a file it has indexed. Note that indexes are temporary to the script's existence so you only need to worry about this if you delete a file between Cave Johnson difference checking cycles.
+
 ###Usage
 1. Add every directory you want minified to `directories.txt`
 2. Add any files you don't want minified to `skip.txt`
